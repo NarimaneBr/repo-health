@@ -21,7 +21,7 @@ def main():
     
     args = parser.parse_args()
     
-    root_path = Path(args.path)
+    root_path = Path(args.path).resolve()
     settings = load_settings(root_path)
     
     analyzer = RepositoryAnalyzer(settings)

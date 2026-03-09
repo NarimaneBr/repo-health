@@ -3,6 +3,7 @@ from rich.panel import Panel
 from rich.table import Table
 from rich import box
 from typing import List
+from pathlib import Path
 from ..models import AnalysisResult
 from ..config import Settings
 
