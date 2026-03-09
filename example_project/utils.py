@@ -100,4 +100,7 @@ def very_long_function():
     print(1)
     print(1)
     print(1)
-    pass
+    print(1)
+    print(1)
+    print(1)
+    print(1)

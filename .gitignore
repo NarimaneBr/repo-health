@@ -80,3 +80,7 @@ dmypy.json
 
 # Project configuration
 repo-health.toml
+
+# Logs
+*.log
+pip_log.txt
