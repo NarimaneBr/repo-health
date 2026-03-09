@@ -8,13 +8,13 @@
   </clipPath>
   <g clip-path="url(#a)">
     <path fill="#555" d="M0 0h75v20H0z"/>
-    <path fill="#dfb317" d="M75 0h55v20H75z"/>
+    <path fill="#4c1" d="M75 0h55v20H75z"/>
     <path fill="url(#b)" d="M0 0h130v20H0z"/>
   </g>
   <g fill="#fff" text-anchor="middle" font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="11">
     <text x="37.5" y="15" fill="#010101" fill-opacity=".3">repo-health</text>
     <text x="37.5" y="14">repo-health</text>
-    <text x="101.5" y="15" fill="#010101" fill-opacity=".3">70/100</text>
-    <text x="101.5" y="14">70/100</text>
+    <text x="101.5" y="15" fill="#010101" fill-opacity=".3">100/100</text>
+    <text x="101.5" y="14">100/100</text>
   </g>
 </svg>
