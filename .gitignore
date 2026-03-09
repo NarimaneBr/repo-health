@@ -51,6 +51,12 @@ coverage.xml
 .pytest_cache/
 cover/
 
+# Generated output files (not meant to be tracked)
+pip_log.txt
+repo-health-badge.svg
+repo-health-report.md
+architecture-graph.svg
+
 # Environments
 .env
 .venv
