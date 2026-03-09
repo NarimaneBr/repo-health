@@ -5,6 +5,7 @@ from .config import load_settings
 from .orchestrator import RepositoryAnalyzer
 from .reporters.console import ConsoleReporter
 from .reporters.json_reporter import JsonReporter
+from .reporters.markdown_reporter import MarkdownReporter
 from .reporters.badge import generate_badge
 from .reporters.graph import generate_graph
 
@@ -13,6 +14,7 @@ def main():
     parser.add_argument("path", help="Path to the repository to analyze")
     parser.add_argument("--verbose", "-v", action="store_true", help="Print detailed report")
     parser.add_argument("--json", action="store_true", help="Output report in JSON format")
+    parser.add_argument("--md", action="store_true", help="Output report in Markdown format (repo-health-report.md)")
     parser.add_argument("--badge", action="store_true", help="Generate a repo-health-badge.svg")
     parser.add_argument("--graph", action="store_true", help="Generate an architecture dependency graph")
     parser.add_argument("--diff", type=str, metavar="BRANCH", help="Analyze only files changed compared to given branch")
@@ -39,6 +41,14 @@ def main():
         reporter = ConsoleReporter(settings)
         reporter.render(global_score, results, verbose=args.verbose, hotspots=args.hotspots, root_path=root_path if args.hotspots else None)
         
+    if args.md:
+        md_path = root_path / "repo-health-report.md"
+        try:
+            MarkdownReporter().render(global_score, results, md_path)
+            print(f"\nMarkdown report successfully generated at {md_path}")
+        except Exception as e:
+            print(f"Error generating markdown report: {e}", file=sys.stderr)
+            
     if args.badge:
         badge_path = root_path / "repo-health-badge.svg"
         try:

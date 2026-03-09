@@ -1,74 +1,130 @@
-# Repo Health
+# 🩺 Repo Health
 
-Analyze the quality of your repository in seconds and get actionable insights to improve your codebase!
+**A highly attractive open-source developer tool to analyze your repository's health in seconds.**
 
 ![Repo Health](https://img.shields.io/badge/repo--health-100-brightgreen)
+![Python Version](https://img.shields.io/badge/python-3.10%2B-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+
+Get actionable insights to improve your codebase, detect complex hotspots, and generate beautiful graphs. Built to feel like a real engineering devtool.
+
+*Topics: `static-analysis` `code-quality` `python` `developer-tools` `cli-tool` `software-quality`*
+
+---
+
+### [Animated Demo Placeholder - Imagine a beautiful terminal GIF here]
+
+---
 
 ## ✨ Features
 
-- **Cyclomatic complexity analysis**: Uses `radon` to evaluate logic complexity.
-- **Function size detection**: Flags oversized functions using Python's `ast`.
-- **Test coverage estimation**: Analyzes the ratio of test files to application code.
-- **Circular dependency detection**: Detects bad import cycles using `networkx`.
-- **Repo health score**: A global 0-100 score on the quality of your project.
-- **CI Integration**: Native support with `--fail-under` flag to break your pipeline.
-- **Badge generation**: Generate an SVG badge right inside your project!
-- **Beautiful Output**: `rich` powered command line report.
+- 🕵️ **Code Hotspot Detection**: Cross-references cyclomatic complexity with Git commit history (`--hotspots`) to find your most risky files!
+- 🕸️ **Architecture Dependency Graph**: Parses Python imports and maps an SVG graph of your module layout (`--graph`).
+- ⚡ **Pull Request / Diff Analysis**: Assesses only files modified on your working branch compared to `main` (`--diff main`). 
+- 📝 **Markdown Report Generation**: Generates a fast `repo-health-report.md` for PR comments (`--md`).
+- 🎖️ **Badge Generator**: Want to show off your repo score? Generate a `repo-health-badge.svg` directly (`--badge`).
+- 🚦 **CI Pipeline Ready**: Break your un-healthy pipelines flawlessly with (`--fail-under 70`).
+- 🎨 **Beautiful Developer Experience**: Powered by `rich` to print stunning health metrics.
+
+---
 
 ## 🚀 Installation
 
-From the project root:
+Ensure you have Python 3.10+, and from the project root simply install via `pip`:
 
 ```bash
+pip install repo-health
+```
+*(Or from source)*:
+```bash
+git clone https://github.com/NarimaneBr/repo-health.git
+cd repo-health
 pip install -e .
 ```
 
+---
+
 ## 💻 Usage
 
-Analyze the current directory:
-
+Analyze your current project working directory:
 ```bash
 repo-health .
 ```
 
-See the hotspots for complexity and size:
+### Advanced Analytics
 
+**Discover Risky Hotspots** (the files modified the most often that are highly complex):
 ```bash
 repo-health . --hotspots
 ```
 
-Generate a badge `repo-health-badge.svg`:
+**Generate Architecture Graph** (Requires `graphviz` to be installed on your system):
+```bash
+repo-health . --graph
+```
 
+**Pull Request Workflow** (Only analyze files differing from the `main` branch):
+```bash
+repo-health . --diff main
+```
+
+**Generate Markdown Report** (Outputs `repo-health-report.md`):
+```bash
+repo-health . --md
+```
+
+**Generate the Repo Health Badge** (Outputs `repo-health-badge.svg`):
 ```bash
 repo-health . --badge
 ```
 
-JSON output (useful for scripts & integrations):
+### Example Usage: Analyzing FastAPI
+
+Curious about how a major Open-Source project performs? Let's analyze FastAPI:
 
 ```bash
-repo-health . --json
+git clone https://github.com/fastapi/fastapi.git
+repo-health fastapi/ --hotspots --fail-under 70
 ```
 
-Fail the pipeline if score is under 70:
-
-```bash
-repo-health . --fail-under 70
+*Output Example:*
 ```
+╭─ Repository Health Report ─╮
+│ Score: 87/100              │
+╰────────────────────────────╯
+
+Metrics
+-------
+  Avg complexity                  3.2
+  Circular dependencies count     0
+  Test ratio                      30%
+
+Code Hotspots
+=============
+fastapi/routing.py
+  complexity: 42
+  commits: 156
+  hotspot score: HIGH (6552 pts)
+```
+
+---
 
 ## ⚙️ Configuration
 
-You can customize the thresholds per project by creating a `repo-health.toml` file at the root:
+Customizing thresholds for your team is simple. Create a `repo-health.toml` in your root:
 
 ```toml
 max_function_lines = 80
 max_complexity = 10
 min_test_ratio = 0.2
-fail_under = 60
+fail_under_score = 60
 ```
 
-## 🤖 CI Integration
+---
 
-Add to your GitHub Actions (`.github/workflows/repo-health.yml`):
+## 🤖 CI Integration (GitHub Actions)
+
+Add Repo-Health into your GitHub Actions workflow `.github/workflows/repo-health.yml` so you never merge complex legacy code again! 
 
 ```yaml
 name: Repo Health Check
@@ -80,40 +136,37 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0   # Important if you want --hotspots or --diff to access history
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: "3.10"
       - name: Install dependencies
-        run: pip install -e .
+        run: pip install repo-health
       - name: Run Repo Health
         run: repo-health . --fail-under 70
 ```
 
-## 🏗️ Architecture
+---
+
+## 🏗️ Architecture Design
 
 ```
 repo-health
 │
 ├── repo_health
 │   ├── cli.py            # CLI entrypoint
-│   ├── analyzer.py       # Orchestrates analysis
-│   ├── scoring.py        # Global score calculation logic
+│   ├── orchestrator.py   # Coordinate analyzers & diff logic
+│   ├── scoring.py        # Global score compute definitions
+│   ├── models.py         # Strong Data Contracts
 │   ├── config.py         # TOML Configuration reader
 │   │
-│   ├── analyzers         # Specialized analysis modules
+│   ├── analyzers         # Extensible plugin-like analyzers
+│   │   ├── complexity.py, functions.py, etc...
 │   │
-│   ├── report            # Presentation logic (Console, JSON, Badge)
+│   ├── reporters         # Isolated output strategies
+│   │   ├── console.py, badge.py, graph.py, markdown_reporter.py
 │   │
-│   └── utils             # Shared generic helpers
-│
-├── pyproject.toml      
-├── repo-health.toml.example
-└── README.md
+│   └── utils             # Generic helpers
 ```
-
-## 🗺️ Roadmap
-
-- v1.2 Markdown reports for PR comments
-- v2.0 JavaScript / TypeScript support
-- v3.0 Web dashboard
