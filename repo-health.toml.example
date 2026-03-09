@@ -1,0 +1,5 @@
+# Configuration for repo-health
+max_function_lines = 80
+max_complexity = 10
+min_test_ratio = 0.2
+fail_under = 60

@@ -1,0 +1,2 @@
+[console_scripts]
+repo-health = repo_health.cli:main

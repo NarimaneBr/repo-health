@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "repo-health"
+version = "0.1.0"
+description = "CLI tool that analyzes the health of a Python repository."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "radon>=6.0.0",
+    "networkx>=3.0.0",
+    "rich>=13.0.0",
+    "tomli>=2.0.0"
+]
+
+[project.scripts]
+repo-health = "repo_health.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["repo_health*"]

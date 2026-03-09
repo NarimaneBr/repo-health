@@ -1,0 +1,4 @@
+radon>=6.0.0
+networkx>=3.0.0
+rich>=13.0.0
+tomli>=2.0.0

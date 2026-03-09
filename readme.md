@@ -1,0 +1,110 @@
+# 🔥 Repo Health
+
+Analyze the quality of your repository in seconds and get actionable insights to improve your codebase!
+
+![Repo Health](https://img.shields.io/badge/repo--health-100-brightgreen)
+
+## ✨ Features
+- **Cyclomatic complexity analysis**: Uses `radon` to evaluate logic complexity.
+- **Function size detection**: Flags oversized functions using Python's `ast`.
+- **Test coverage estimation**: Analyzes the ratio of test files to application code.
+- **Circular dependency detection**: Detects bad import cycles using `networkx`.
+- **Repo health score**: A global 0-100 score on the quality of your project.
+- **CI Integration**: Native support with `--fail-under` flag to break your pipeline.
+- **Badge generation**: Generate an SVG badge right inside your project!
+- **Beautiful Output**: `rich` powered command line report.
+
+## 🚀 Installation
+
+From the project root:
+```bash
+pip install -e .
+```
+
+## 💻 Usage
+
+Analyze the current directory:
+```bash
+repo-health .
+```
+
+See the hotspots for complexity and size:
+```bash
+repo-health . --hotspots
+```
+
+Generate a badge `repo-health-badge.svg`:
+```bash
+repo-health . --badge
+```
+
+JSON output (useful for scripts & integrations):
+```bash
+repo-health . --json
+```
+
+Fail the pipeline if score is under 70:
+```bash
+repo-health . --fail-under 70
+```
+
+## ⚙️ Configuration
+
+You can customize the thresholds per project by creating a `repo-health.toml` file at the root:
+
+```toml
+max_function_lines = 80
+max_complexity = 10
+min_test_ratio = 0.2
+fail_under = 60
+```
+
+## 🤖 CI Integration
+
+Add to your GitHub Actions (`.github/workflows/repo-health.yml`):
+
+```yaml
+name: Repo Health Check
+
+on: [push, pull_request]
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+      - name: Install dependencies
+        run: pip install -e .
+      - name: Run Repo Health
+        run: repo-health . --fail-under 70
+```
+
+## 🏗️ Architecture
+```
+repo-health
+│
+├── repo_health
+│   ├── cli.py            # CLI entrypoint
+│   ├── analyzer.py       # Orchestrates analysis
+│   ├── scoring.py        # Global score calculation logic
+│   ├── config.py         # TOML Configuration reader
+│   │
+│   ├── analyzers         # Specialized analysis modules
+│   │
+│   ├── report            # Presentation logic (Console, JSON, Badge)
+│   │
+│   └── utils             # Shared generic helpers
+│
+├── pyproject.toml        
+├── repo-health.toml.example
+└── README.md
+```
+
+## 🗺️ Roadmap
+- v1.2 Markdown reports for PR comments
+- v2.0 JavaScript / TypeScript support
+- v3.0 Web dashboard
