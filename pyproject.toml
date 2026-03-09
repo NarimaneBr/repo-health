@@ -8,6 +8,10 @@ version = "0.1.0"
 description = "CLI tool that analyzes the health of a Python repository."
 readme = "README.md"
 requires-python = ">=3.10"
+authors = [
+    { name = "Narimane Berradj" }
+]
+license = { file = "LICENSE" }
 dependencies = [
     "radon>=6.0.0",
     "networkx>=3.0.0",

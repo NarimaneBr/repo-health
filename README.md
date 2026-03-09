@@ -137,6 +137,10 @@ pip install -e .
 pytest
 ```
 
+## Maintainer
+
+Narimane Berradj — @NarimaneBr
+
 ## License
 
 MIT License.
