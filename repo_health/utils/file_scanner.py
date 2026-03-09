@@ -1,5 +1,8 @@
 import os
 from pathlib import Path
+from ..logger import get_logger
+
+logger = get_logger("scanner")
 
 def find_python_files(root_path: Path) -> list[Path]:
     """Find all python files ignoring virtual environments and hidden directories."""

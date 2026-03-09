@@ -3,6 +3,9 @@ from pathlib import Path
 from .base import BaseAnalyzer
 from ..models import AnalysisResult, Metric, Issue
 from ..config import Settings
+from ..logger import get_logger
+
+logger = get_logger("analyzers.functions")
 
 class FunctionVisitor(ast.NodeVisitor):
     def __init__(self):
@@ -52,10 +55,11 @@ class FunctionSizeAnalyzer(BaseAnalyzer):
                             file_path=str(file),
                             line=func.lineno
                         ))
-            except Exception:
-                pass
+            except Exception as e:
+                logger.warning(f"Failed to parse {file}: {e}")
                 
         long_functions.sort(key=lambda x: x['lines'], reverse=True)
+        logger.debug(f"Total functions: {total_functions}, long: {len(long_functions)}")
                 
         metrics = [
             Metric(name="total_functions", value=total_functions),

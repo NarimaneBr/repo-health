@@ -1,6 +1,9 @@
 from typing import List
 from .models import AnalysisResult
 from .config import Settings
+from .logger import get_logger
+
+logger = get_logger("scoring")
 
 class ScoreCalculator:
     def __init__(self, settings: Settings):
@@ -50,7 +53,11 @@ class ScoreCalculator:
             if scorer:
                 result.score = scorer(result)
                 score += result.score
+                logger.debug(f"Score for {result.analyzer_name}: {result.score}")
             else:
                 result.score = 0
+                logger.warning(f"No scorer found for analyzer: {result.analyzer_name}")
 
-        return round(score)
+        final_score = round(score)
+        logger.debug(f"Final aggregated score: {final_score}/100")
+        return final_score

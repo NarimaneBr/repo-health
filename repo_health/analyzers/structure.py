@@ -2,6 +2,9 @@ from pathlib import Path
 from .base import BaseAnalyzer
 from ..models import AnalysisResult, Metric, Issue
 from ..config import Settings
+from ..logger import get_logger
+
+logger = get_logger("analyzers.structure")
 
 class StructureAnalyzer(BaseAnalyzer):
     @property
@@ -19,6 +22,11 @@ class StructureAnalyzer(BaseAnalyzer):
         if not has_reqs: missing.append("requirements.txt or pyproject.toml")
         if not has_tests: missing.append("tests/ folder")
         if not has_gitignore: missing.append(".gitignore")
+        
+        if missing:
+            logger.debug(f"Missing essential files: {missing}")
+        else:
+            logger.debug("All essential files present.")
         
         issues = []
         suggestions = []

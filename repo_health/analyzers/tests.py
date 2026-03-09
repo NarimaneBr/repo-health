@@ -3,6 +3,9 @@ from pathlib import Path
 from .base import BaseAnalyzer
 from ..models import AnalysisResult, Metric, Issue
 from ..config import Settings
+from ..logger import get_logger
+
+logger = get_logger("analyzers.tests")
 
 class TestsAnalyzer(BaseAnalyzer):
     @property
@@ -24,6 +27,7 @@ class TestsAnalyzer(BaseAnalyzer):
                 
         total_files = len(files)
         test_ratio = test_files / total_files if total_files > 0 else 0
+        logger.debug(f"Test files: {test_files}/{total_files}, ratio: {test_ratio:.1%}")
         
         metrics = [
             Metric(name="test_files_count", value=test_files),

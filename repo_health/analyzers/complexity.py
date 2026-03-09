@@ -3,6 +3,9 @@ from radon.complexity import cc_visit
 from .base import BaseAnalyzer
 from ..models import AnalysisResult, Metric, Issue
 from ..config import Settings
+from ..logger import get_logger
+
+logger = get_logger("analyzers.complexity")
 
 class ComplexityAnalyzer(BaseAnalyzer):
     @property
@@ -41,11 +44,12 @@ class ComplexityAnalyzer(BaseAnalyzer):
                                 line=getattr(block, 'lineno', 0)
                             ))
                 file_complexities[str(file)] = file_comp_sum
-            except Exception:
-                pass
+            except Exception as e:
+                logger.warning(f"Failed to parse {file}: {e}")
                 
         avg_complexity = total_complexity / total_blocks if total_blocks > 0 else 0
         complex_functions.sort(key=lambda x: x['complexity'], reverse=True)
+        logger.debug(f"Avg complexity: {avg_complexity:.2f}, complex functions: {len(complex_functions)}")
         
         metrics = [
             Metric(name="avg_complexity", value=avg_complexity),
