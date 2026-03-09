@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Repo Health - Static Analysis for Python</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description"
+        content="Repo Health is a Python CLI tool for analyzing repository health using static analysis. Evaluate codebase maintainability, detect hotspots, and generate architecture graphs.">
+    <meta name="keywords"
+        content="python, static analysis, code quality, developer tools, codebase analysis, software quality">
+    <meta name="author" content="NarimaneBr">
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Repo Health - Analyze Repository Health in Seconds">
+    <meta property="og:description"
+        content="Repo Health is a static analysis CLI that evaluates repository maintainability by detecting complexity issues, test gaps, dependency cycles, and architectural risks.">
+    <meta property="og:image" content="https://github.com/NarimaneBr/repo-health/raw/main/docs/assets/demo.png">
+    <meta property="og:type" content="website">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code&display=swap"
+        rel="stylesheet">
+
+    <!-- Styles & Scripts -->
+    <link rel="stylesheet" href="style.css">
+    <script defer src="script.js"></script>
+</head>
+
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="logo">🩺 Repo Health</div>
+            <nav>
+                <a href="#features">Features</a>
+                <a href="#installation">Installation</a>
+                <a href="#architecture">Architecture</a>
+                <a href="https://github.com/NarimaneBr/repo-health" class="github-link" target="_blank" rel="noopener">
+                    <svg viewBox="0 0 16 16" width="20" height="20" fill="currentColor">
+                        <path
+                            d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z">
+                        </path>
+                    </svg>
+                    GitHub
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero container">
+            <div class="hero-content">
+                <a href="https://github.com/NarimaneBr/repo-health" target="_blank" class="github-badge">
+                    <img src="https://img.shields.io/github/stars/NarimaneBr/repo-health?style=social"
+                        alt="GitHub stars">
+                </a>
+                <h1>Analyze the health of your repository in seconds.</h1>
+                <p>Repo Health is a static analysis CLI that evaluates repository maintainability by detecting
+                    complexity issues, test gaps, dependency cycles, and architectural risks.</p>
+                <div class="hero-actions">
+                    <a href="https://github.com/NarimaneBr/repo-health" class="btn btn-primary">View on GitHub</a>
+                    <a href="#installation" class="btn btn-secondary">Get Started</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Installation Section -->
+        <section id="installation" class="container text-center section-spacing">
+            <h2>Quick Start</h2>
+            <p>Install the cli tool globally via pip.</p>
+            <div class="code-container">
+                <code id="install-cmd">pip install repo-health</code>
+                <button class="copy-btn" data-target="install-cmd">Copy</button>
+            </div>
+            <p class="mt-2">Run it in your repository:</p>
+            <div class="code-container">
+                <code id="run-cmd">repo-health .</code>
+                <button class="copy-btn" data-target="run-cmd">Copy</button>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="container section-spacing">
+            <h2 class="text-center">Powerful Features</h2>
+            <div class="grid">
+                <div class="card">
+                    <h3>🎖️ Repository Health Score</h3>
+                    <p>Calculates a global 0-100 maintainability score based on structural and logical code quality.</p>
+                </div>
+                <div class="card">
+                    <h3>🧩 Complexity Analysis</h3>
+                    <p>Detects oversized functions and evaluates cyclomatic complexity across all Python files using
+                        <code>radon</code>.</p>
+                </div>
+                <div class="card">
+                    <h3>🔥 Hotspot Detection</h3>
+                    <p>Analyzes your Git history to identify the most frequently modified, highly complex files causing
+                        technical debt.</p>
+                </div>
+                <div class="card">
+                    <h3>🕸️ Architecture Graph</h3>
+                    <p>Parses imports, builds an edge graph, and generates an SVG visualization of your internal
+                        architecture.</p>
+                </div>
+                <div class="card">
+                    <h3>🔄 Dependency Cycle Detection</h3>
+                    <p>Finds circular dependencies and import loops before they cause massive runtime or scaling issues.
+                    </p>
+                </div>
+                <div class="card">
+                    <h3>🚧 Pull Request Analysis</h3>
+                    <p>Evaluates only the files modified in your current branch vs. <code>main</code>, strictly
+                        detecting newly added regressions.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Example Section -->
+        <section id="example" class="container section-spacing">
+            <div class="example-grid">
+                <div class="example-text">
+                    <h2>Actionable Insights</h2>
+                    <p>Repo Health delivers real-time recommendations. Stop spending hours reviewing massive
+                        architectures when you can detect the bottlenecks immediately.</p>
+                    <ul>
+                        <li>Generates Markdown reports (<code>--md</code>)</li>
+                        <li>Generates dynamic badges (<code>--badge</code>)</li>
+                        <li>Returns standard CLI exit codes (<code>--fail-under 70</code>)</li>
+                    </ul>
+                </div>
+                <div class="terminal-window">
+                    <div class="terminal-header">
+                        <span class="dot red"></span>
+                        <span class="dot yellow"></span>
+                        <span class="dot green"></span>
+                    </div>
+                    <div class="terminal-body">
+                        <pre><code>$ repo-health .
+
+╭─ Repository Health Report ─╮
+│ Score: <span class="text-green">82/100</span>              │
+╰────────────────────────────╯
+
+Metrics
+-------
+Cyclomatic complexity avg: 3.8
+Functions > 80 lines: 3
+Test ratio: 22%
+
+Issues
+------
+- 3 functions longer than 80 lines
+</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Architecture Section -->
+        <section id="architecture" class="container section-spacing text-center">
+            <h2>Visualize Your Architecture</h2>
+            <p>Generate SVG graphs locally with a single command to understand how all sub-modules interact.</p>
+            <div class="code-container mx-auto" style="margin-bottom: 2rem;">
+                <code id="graph-cmd">repo-health . --graph</code>
+                <button class="copy-btn" data-target="graph-cmd">Copy</button>
+            </div>
+            <img src="assets/architecture.svg" alt="Architecture Graph"
+                style="max-width: 100%; border-radius: 8px; border: 1px solid var(--border-color);">
+        </section>
+
+    </main>
+
+    <footer>
+        <div class="container text-center">
+            <p>Open source project created by <strong>NarimaneBr</strong>. Licensed under MIT.</p>
+            <div class="footer-links">
+                <a href="https://github.com/NarimaneBr/repo-health">GitHub Repository</a>
+                <a href="https://github.com/NarimaneBr/repo-health/issues">Report an Issue</a>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>
