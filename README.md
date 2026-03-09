@@ -1,94 +1,60 @@
-# 🩺 Repo Health
+# Repo Health
 
-**A highly attractive open-source developer tool to analyze your repository's health in seconds.**
+Repo Health is a Python CLI that analyzes repository maintainability using static analysis.
 
-![Repo Health](https://img.shields.io/badge/repo--health-100-brightgreen)
-![Python Version](https://img.shields.io/badge/python-3.10%2B-blue)
-![License](https://img.shields.io/badge/license-MIT-green)
+It evaluates projects by detecting complexity issues, test presence, circular dependencies, and missing architectural standards. Rather than linting syntax, it uses heuristics to surface structural technical debt across a codebase and calculates an aggregate maintainability score.
 
-Get actionable insights to improve your codebase, detect complex hotspots, and generate beautiful graphs. Built to feel like a real engineering devtool.
+## Installation
 
-*Topics: `static-analysis` `code-quality` `python` `developer-tools` `cli-tool` `software-quality`*
-
----
-
-### [Animated Demo Placeholder - Imagine a beautiful terminal GIF here]
-
----
-
-## ✨ Features
-
-- 🕵️ **Code Hotspot Detection**: Cross-references cyclomatic complexity with Git commit history (`--hotspots`) to find your most risky files!
-- 🕸️ **Architecture Dependency Graph**: Parses Python imports and maps an SVG graph of your module layout (`--graph`).
-- ⚡ **Pull Request / Diff Analysis**: Assesses only files modified on your working branch compared to `main` (`--diff main`). 
-- 📝 **Markdown Report Generation**: Generates a fast `repo-health-report.md` for PR comments (`--md`).
-- 🎖️ **Badge Generator**: Want to show off your repo score? Generate a `repo-health-badge.svg` directly (`--badge`).
-- 🚦 **CI Pipeline Ready**: Break your un-healthy pipelines flawlessly with (`--fail-under 70`).
-- 🎨 **Beautiful Developer Experience**: Powered by `rich` to print stunning health metrics.
-
----
-
-## 🚀 Installation
-
-Ensure you have Python 3.10+, and from the project root simply install via `pip`:
+Install using pip:
 
 ```bash
 pip install repo-health
 ```
-*(Or from source)*:
+
+Or install from source:
+
 ```bash
 git clone https://github.com/NarimaneBr/repo-health.git
 cd repo-health
 pip install -e .
 ```
 
----
+## Usage
 
-## 💻 Usage
+Analyze the current directory:
 
-Analyze your current project working directory:
 ```bash
 repo-health .
 ```
 
-### Advanced Analytics
+Generate a markdown report and a repository badge SVG:
 
-**Discover Risky Hotspots** (the files modified the most often that are highly complex):
 ```bash
-repo-health . --hotspots
+repo-health . --md --badge
 ```
 
-**Generate Architecture Graph** (Requires `graphviz` to be installed on your system):
-```bash
-repo-health . --graph
-```
+Analyze only files changed compared to a specific Git branch (useful for pull requests):
 
-**Pull Request Workflow** (Only analyze files differing from the `main` branch):
 ```bash
 repo-health . --diff main
 ```
 
-**Generate Markdown Report** (Outputs `repo-health-report.md`):
-```bash
-repo-health . --md
-```
-
-**Generate the Repo Health Badge** (Outputs `repo-health-badge.svg`):
-```bash
-repo-health . --badge
-```
-
-### Example Usage: Analyzing FastAPI
-
-Curious about how a major Open-Source project performs? Let's analyze FastAPI:
+Identify hotspots by cross-referencing cyclomatic complexity with Git commit frequency:
 
 ```bash
-git clone https://github.com/fastapi/fastapi.git
-repo-health fastapi/ --hotspots --fail-under 70
+repo-health . --hotspots
 ```
 
-*Output Example:*
+Generate an architecture dependency graph (requires `graphviz`):
+
+```bash
+repo-health . --graph
 ```
+
+## Example output
+
+```text
 ╭─ Repository Health Report ─╮
 │ Score: 87/100              │
 ╰────────────────────────────╯
@@ -97,7 +63,7 @@ Metrics
 -------
   Avg complexity                  3.2
   Circular dependencies count     0
-  Test ratio                      30%
+  Test ratio                      0.30
 
 Code Hotspots
 =============
@@ -107,24 +73,30 @@ fastapi/routing.py
   hotspot score: HIGH (6552 pts)
 ```
 
----
+## How scoring works
 
-## ⚙️ Configuration
+The tool assigns a global score between 0 and 100 based on the weighted aggregation of multiple heuristics:
 
-Customizing thresholds for your team is simple. Create a `repo-health.toml` in your root:
+- **Cyclomatic Complexity**: Penalizes projects where the average cyclomatic complexity (computed via `radon`) exceeds a baseline.
+- **Function Size**: Deducts points for functions longer than 80 lines (parsed via Python `ast`).
+- **Test Ratio**: Evaluates the ratio of detected test files against standard code files.
+- **Dependencies**: Penalizes the detection of circular import cycles (computed via `networkx`).
+- **Structure**: Checks for the existence of standard files (e.g., `README.md`, `tests/` directory).
+
+You can configure thresholds globally by creating a `repo-health.toml` file in your repository base:
 
 ```toml
 max_function_lines = 80
 max_complexity = 10
 min_test_ratio = 0.2
-fail_under_score = 60
+fail_under_score = 70
 ```
 
----
+## CI usage
 
-## 🤖 CI Integration (GitHub Actions)
+Repo Health can run in CI pipelines to block merging if a project's maintainability score degrades. Use the `--fail-under` flag. If the computed score is lower than the threshold, the process exits with code 1.
 
-Add Repo-Health into your GitHub Actions workflow `.github/workflows/repo-health.yml` so you never merge complex legacy code again! 
+Example GitHub Actions workflow (`.github/workflows/repo-health.yml`):
 
 ```yaml
 name: Repo Health Check
@@ -137,36 +109,34 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          fetch-depth: 0   # Important if you want --hotspots or --diff to access history
+          fetch-depth: 0
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: "3.10"
-      - name: Install dependencies
+      - name: Install
         run: pip install repo-health
-      - name: Run Repo Health
+      - name: Run analysis
         run: repo-health . --fail-under 70
 ```
 
----
+## Limitations
 
-## 🏗️ Architecture Design
+- **Heuristic based**: Metrics like test ratio and hotspots rely on heuristics. The test ratio is calculated purely on file counts, not line coverage or branch execution.
+- **Dependency graph limits**: Circular dependency detection relies on static AST parsing of local modules. It may not resolve complex dynamic imports, `sys.path` modifications, or aliased re-exports.
+- **Python only**: Currently, the AST-based function analysis and import parsers support only Python source code formatting.
 
+## Development
+
+To develop or test locally:
+
+```bash
+git clone https://github.com/NarimaneBr/repo-health.git
+cd repo-health
+pip install -e .
+pytest
 ```
-repo-health
-│
-├── repo_health
-│   ├── cli.py            # CLI entrypoint
-│   ├── orchestrator.py   # Coordinate analyzers & diff logic
-│   ├── scoring.py        # Global score compute definitions
-│   ├── models.py         # Strong Data Contracts
-│   ├── config.py         # TOML Configuration reader
-│   │
-│   ├── analyzers         # Extensible plugin-like analyzers
-│   │   ├── complexity.py, functions.py, etc...
-│   │
-│   ├── reporters         # Isolated output strategies
-│   │   ├── console.py, badge.py, graph.py, markdown_reporter.py
-│   │
-│   └── utils             # Generic helpers
-```
+
+## License
+
+MIT License.
