@@ -3,7 +3,7 @@ from pathlib import Path
 
 def find_python_files(root_path: Path) -> list[Path]:
     """Find all python files ignoring virtual environments and hidden directories."""
-    ignored_dirs = {'.git', '.venv', 'venv', 'env', '__pycache__', '.tox', '.pytest_cache', 'node_modules'}
+    ignored_dirs = {'.git', '.venv', 'venv', 'env', '__pycache__', '.tox', '.pytest_cache', 'node_modules', 'example_project'}
     python_files = []
     
     for dirpath, dirnames, filenames in os.walk(root_path):

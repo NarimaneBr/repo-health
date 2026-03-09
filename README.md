@@ -1,10 +1,11 @@
-# 🔥 Repo Health
+# Repo Health
 
 Analyze the quality of your repository in seconds and get actionable insights to improve your codebase!
 
 ![Repo Health](https://img.shields.io/badge/repo--health-100-brightgreen)
 
 ## ✨ Features
+
 - **Cyclomatic complexity analysis**: Uses `radon` to evaluate logic complexity.
 - **Function size detection**: Flags oversized functions using Python's `ast`.
 - **Test coverage estimation**: Analyzes the ratio of test files to application code.
@@ -17,6 +18,7 @@ Analyze the quality of your repository in seconds and get actionable insights to
 ## 🚀 Installation
 
 From the project root:
+
 ```bash
 pip install -e .
 ```
@@ -24,26 +26,31 @@ pip install -e .
 ## 💻 Usage
 
 Analyze the current directory:
+
 ```bash
 repo-health .
 ```
 
 See the hotspots for complexity and size:
+
 ```bash
 repo-health . --hotspots
 ```
 
 Generate a badge `repo-health-badge.svg`:
+
 ```bash
 repo-health . --badge
 ```
 
 JSON output (useful for scripts & integrations):
+
 ```bash
 repo-health . --json
 ```
 
 Fail the pipeline if score is under 70:
+
 ```bash
 repo-health . --fail-under 70
 ```
@@ -84,6 +91,7 @@ jobs:
 ```
 
 ## 🏗️ Architecture
+
 ```
 repo-health
 │
@@ -99,12 +107,13 @@ repo-health
 │   │
 │   └── utils             # Shared generic helpers
 │
-├── pyproject.toml        
+├── pyproject.toml      
 ├── repo-health.toml.example
 └── README.md
 ```
 
 ## 🗺️ Roadmap
+
 - v1.2 Markdown reports for PR comments
 - v2.0 JavaScript / TypeScript support
 - v3.0 Web dashboard
