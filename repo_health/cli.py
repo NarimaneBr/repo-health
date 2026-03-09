@@ -23,51 +23,63 @@ def main():
     
     args = parser.parse_args()
     
+    from .logger import setup_logger, get_logger
+    setup_logger(args.verbose)
+    logger = get_logger("cli")
+    
     root_path = Path(args.path).resolve()
+    logger.debug(f"Loading settings for path: {root_path}")
     settings = load_settings(root_path)
     
     analyzer = RepositoryAnalyzer(settings)
     
     try:
+        logger.info("Starting repository analysis...")
         global_score, results = analyzer.analyze(args.path, diff_branch=args.diff)
+        logger.info("Analysis completed successfully.")
     except Exception as e:
-        print(f"Error analyzing repository: {e}", file=sys.stderr)
+        logger.exception(f"Error analyzing repository: {e}")
         sys.exit(2)
         
     if args.json:
+        logger.debug("Rendering JSON report")
         reporter = JsonReporter()
         print(reporter.render(global_score, results))
     else:
+        logger.debug("Rendering Console report")
         reporter = ConsoleReporter(settings)
         reporter.render(global_score, results, verbose=args.verbose, hotspots=args.hotspots, root_path=root_path if args.hotspots else None)
         
     if args.md:
         md_path = root_path / "repo-health-report.md"
         try:
+            logger.debug(f"Generating markdown report at {md_path}")
             MarkdownReporter().render(global_score, results, md_path)
-            print(f"\nMarkdown report successfully generated at {md_path}")
+            logger.info(f"Markdown report successfully generated at {md_path}")
         except Exception as e:
-            print(f"Error generating markdown report: {e}", file=sys.stderr)
+            logger.error(f"Error generating markdown report: {e}")
             
     if args.badge:
         badge_path = root_path / "repo-health-badge.svg"
         try:
+            logger.debug(f"Generating badge at {badge_path}")
             generate_badge(global_score, badge_path)
-            print(f"\nBadge successfully generated at {badge_path}")
+            logger.info(f"Badge successfully generated at {badge_path}")
         except Exception as e:
-            print(f"Error generating badge: {e}", file=sys.stderr)
+            logger.error(f"Error generating badge: {e}")
             
     if args.graph:
         graph_path = root_path / "architecture-graph.svg"
         try:
+            logger.debug(f"Generating architecture graph at {graph_path}")
             generate_graph(results, graph_path)
-            print(f"\nDependency graph successfully generated at {graph_path}")
+            logger.info(f"Dependency graph successfully generated at {graph_path}")
         except Exception as e:
-            print(f"Error generating graph: {e}. You might need graphviz installed.", file=sys.stderr)
+            logger.warning(f"Error generating graph (graphviz might be missing): {e}")
 
     threshold = args.fail_under if args.fail_under is not None else settings.fail_under_score
     if global_score < threshold:
-        print(f"\nError: Score {global_score} is below the threshold of {threshold}. Failing.", file=sys.stderr)
+        logger.error(f"Score {global_score} is below the threshold of {threshold}. Failing.")
         sys.exit(1)
 
 if __name__ == "__main__":

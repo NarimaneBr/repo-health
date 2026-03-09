@@ -11,6 +11,9 @@ from .analyzers.dependencies import DependenciesAnalyzer
 from .analyzers.structure import StructureAnalyzer
 from .scoring import ScoreCalculator
 from .utils.file_scanner import find_python_files
+from .logger import get_logger
+
+logger = get_logger("orchestrator")
 
 class RepositoryAnalyzer:
     def __init__(self, settings: Settings):
@@ -46,21 +49,27 @@ class RepositoryAnalyzer:
         root_path = Path(path).resolve()
         
         if not root_path.exists() or not root_path.is_dir():
+            logger.error(f"Analysis failed: Directory not found: {path}")
             raise ValueError(f"Directory not found: {path}")
             
+        logger.debug(f"Scanning python files in: {root_path}")
         files = find_python_files(root_path)
+        logger.debug(f"Found {len(files)} python files.")
         
         if diff_branch:
+            logger.info(f"Running diff analysis against branch: '{diff_branch}'")
             changed_files = self._get_changed_files(root_path, diff_branch)
-            # We still need all files for dependency graph or structure, but we 
-            # might only want to analyze complexity on the changed files.
-            # To be thorough but simple, we intersect the lists.
             files = [f for f in files if f in changed_files]
+            logger.debug(f"Files to analyze after diff filter: {len(files)}")
         
         results = []
         for analyzer in self.analyzers:
+            logger.debug(f"Running '{analyzer.name}' analyzer...")
             result = analyzer.run(root_path, files, self.settings)
             results.append(result)
             
+        logger.debug("Computing final global score...")
         global_score = self.scorer.compute(results)
+        logger.debug(f"Global score calculated: {global_score}")
+        
         return global_score, results
